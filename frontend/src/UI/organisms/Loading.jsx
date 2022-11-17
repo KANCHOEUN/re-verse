@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo } from "../../api/user";
+import { setLoginUser } from "../../modules/user";
+import NeonLightBG from "../atoms/NeonLightBG";
 
 function Loading() {
+  const loginUser = useSelector((state) => state.user.loginUser);
+  console.log(loginUser);
   return (
-    <div className="bg-red-300 flex absolute w-full h-full justify-center align-middle z-50 items-center overflow-x-hidden overflow-y-hidden">
-      로딩페이지입니다.
+    <div className="bg-base2 absolute w-full h-full z-50 align-middle">
+      <NeonLightBG />
     </div>
   );
 }

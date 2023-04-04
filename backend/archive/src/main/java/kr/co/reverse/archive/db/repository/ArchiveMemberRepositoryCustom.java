@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ArchiveMemberRepositoryCustom {
 
-    List<ArchiveMember> archiveMemberList(User user, User target);
+    List<ArchiveMember> getArchiveMembers(User user, User target);
 }

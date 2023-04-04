@@ -61,11 +61,11 @@ public class FriendService {
         }
 
         FriendInvitation friendInvitation = friendInvitationRepository.findFriendInvitationByInvitationUserAndInvitationTarget(target, user);
-        if(friendInvitation != null){
+        if (friendInvitation != null) {
             friendInvitationRepository.delete(friendInvitation);
         }
         FriendInvitation friendInvitation1 = friendInvitationRepository.findFriendInvitationByInvitationUserAndInvitationTarget(user, target);
-        if(friendInvitation1 != null){
+        if (friendInvitation1 != null) {
             friendInvitationRepository.delete(friendInvitation1);
         }
     }
@@ -91,14 +91,14 @@ public class FriendService {
         friendRepository.delete(friend2);
 
         // user와 친구의 아카이브 멤버도 모두 삭제할것
-        List<ArchiveMember> archiveMembers1 = archiveMemberRepository.archiveMemberList(user, target);
-        List<ArchiveMember> archiveMembers2 = archiveMemberRepository.archiveMemberList(user, target);
+        List<ArchiveMember> archiveMembers1 = archiveMemberRepository.getArchiveMembers(user, target);
+        List<ArchiveMember> archiveMembers2 = archiveMemberRepository.getArchiveMembers(target, user);
         archiveMemberRepository.deleteAll(archiveMembers1);
         archiveMemberRepository.deleteAll(archiveMembers2);
 
         // bookmark 도 체크해서 지우기
-        List<BookMark> bookMarks1 = bookmarkRepository.bookmarkList(user, target);
-        List<BookMark> bookMarks2 = bookmarkRepository.bookmarkList(target, user);
+        List<BookMark> bookMarks1 = bookmarkRepository.getBookmarks(user, target);
+        List<BookMark> bookMarks2 = bookmarkRepository.getBookmarks(target, user);
         bookmarkRepository.deleteAll(bookMarks1);
         bookmarkRepository.deleteAll(bookMarks2);
 

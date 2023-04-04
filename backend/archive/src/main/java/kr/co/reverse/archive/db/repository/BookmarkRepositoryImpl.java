@@ -19,7 +19,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom{
 
 
     @Override
-    public List<BookMark> bookmarkList(User user, User target) {
+    public List<BookMark> getBookmarks(User user, User target) {
         return jpaQueryFactory
                 .select(QBookMark.bookMark)
                 .from(QBookMark.bookMark)

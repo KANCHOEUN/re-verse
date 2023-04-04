@@ -116,13 +116,17 @@ public class FriendController {
 
     @PostMapping("/bookmark")
     public ResponseEntity createBookmark(@RequestBody BookmarkReq bookmarkReq) {
-
         String userId = userService.getUserId();
         User user = userService.getPlayer(userId);
+
         Archive archive = archiveService.getArchive(bookmarkReq.getArchiveId());
+        User target = userService.getPlayer(archive.getOwnerId().toString());
+
+        if (friendService.checkFriend(user, target)) {
+            throw new NotFriendException();
+        }
 
         friendService.createBookmark(archive, user);
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

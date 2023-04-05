@@ -109,7 +109,7 @@ public class FriendController {
         String userId = userService.getUserId();
         User user = userService.getPlayer(userId);
 
-        List<ArchiveRes> myBookmarkArchive = archiveService.getMyBookmarkArchive(UUID.fromString(userId));
+        List<ArchiveRes> myBookmarkArchive = archiveService.getMyBookmarkArchives(UUID.fromString(userId));
 
         return ResponseEntity.ok(ArchivesRes.of(myBookmarkArchive));
     }

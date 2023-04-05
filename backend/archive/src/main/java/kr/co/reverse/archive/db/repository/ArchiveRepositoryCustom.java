@@ -1,6 +1,7 @@
 package kr.co.reverse.archive.db.repository;
 
 import kr.co.reverse.archive.api.response.ArchiveDetailRes;
+import kr.co.reverse.archive.api.response.ArchiveDto;
 import kr.co.reverse.archive.api.response.ArchiveRes;
 import kr.co.reverse.archive.api.response.UserRes;
 
@@ -11,7 +12,7 @@ public interface ArchiveRepositoryCustom {
 
     ArchiveDetailRes getArchiveDetail(UUID archiveId);
 
-    List<ArchiveRes> getMyArchives(UUID userId);
+    List<ArchiveDto> getMyArchives(UUID userId);
 
     List<ArchiveRes> getFriendArchives(UUID userId);
 
@@ -19,5 +20,5 @@ public interface ArchiveRepositoryCustom {
 
     Boolean checkBookmark(UUID archiveId, UUID userId);
 
-    List<ArchiveRes> getBookmarkArchive(UUID userId);
+    List<ArchiveRes> getBookmarkArchives(UUID userId);
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BookmarkRepositoryCustom {
 
-    public List<BookMark> bookmarkList(User user, User target);
+    public List<BookMark> getBookmarks(User user, User target);
 }

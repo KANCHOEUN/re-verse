@@ -31,4 +31,15 @@ public class ArchiveRes {
         this.title = title;
         this.description = description;
     }
+
+    public static ArchiveRes of(UUID archiveId, UserRes owner, String title, String description, boolean bookmark, List<UserRes> members) {
+        ArchiveRes archiveRes = new ArchiveRes();
+        archiveRes.setArchiveId(archiveId);
+        archiveRes.setOwner(owner);
+        archiveRes.setTitle(title);
+        archiveRes.setDescription(description);
+        archiveRes.setBookmark(bookmark);
+        archiveRes.setMembers(members);
+        return archiveRes;
+    }
 }

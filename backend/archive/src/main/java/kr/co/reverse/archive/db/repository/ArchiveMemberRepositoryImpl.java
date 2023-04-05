@@ -18,7 +18,7 @@ public class ArchiveMemberRepositoryImpl implements ArchiveMemberRepositoryCusto
     }
 
     @Override
-    public List<ArchiveMember> archiveMemberList(User user, User target) {
+    public List<ArchiveMember> getArchiveMembers(User user, User target) {
         return jpaQueryFactory
                 .select(
                         QArchiveMember.archiveMember

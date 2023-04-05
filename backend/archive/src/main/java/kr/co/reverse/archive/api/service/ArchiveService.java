@@ -1,10 +1,7 @@
 package kr.co.reverse.archive.api.service;
 
 import kr.co.reverse.archive.api.request.ArchiveReq;
-import kr.co.reverse.archive.api.response.ArchiveDetailRes;
-import kr.co.reverse.archive.api.response.ArchiveRes;
-import kr.co.reverse.archive.api.response.StuffRes;
-import kr.co.reverse.archive.api.response.UserRes;
+import kr.co.reverse.archive.api.response.*;
 import kr.co.reverse.archive.db.entity.*;
 import kr.co.reverse.archive.db.repository.ArchiveMemberRepository;
 import kr.co.reverse.archive.db.repository.ArchiveRepository;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -58,17 +56,53 @@ public class ArchiveService {
         return archive;
     }
 
+//    public List<ArchiveRes> getArchives(User user) {
+//        List<ArchiveRes> myArchives = archiveRepository.getMyArchives(user.getId());
+//
+//        if (myArchives != null) {
+//            for (ArchiveRes archiveRes : myArchives) {
+//                UUID archiveId = archiveRes.getArchiveId();
+//                List<UserRes> members = archiveRepository.getMembers(archiveId);
+//                Boolean isBookmark = false;
+//
+//                archiveRes.setMembers(members);
+//                archiveRes.setBookmark(isBookmark);
+//            }
+//        }
+//
+//        return myArchives;
+//    }
+
     public List<ArchiveRes> getArchives(User user) {
-        List<ArchiveRes> myArchives = archiveRepository.getMyArchives(user.getId());
+        List<ArchiveDto> myArchivesDtos = archiveRepository.getMyArchives(user.getId());
+        List<ArchiveRes> myArchives = new ArrayList<>();
 
-        if (myArchives != null) {
-            for (ArchiveRes archiveRes : myArchives) {
-                UUID archiveId = archiveRes.getArchiveId();
-                List<UserRes> members = archiveRepository.getMembers(archiveId);
-                Boolean isBookmark = archiveRepository.checkBookmark(archiveId, user.getId());
+        if (myArchivesDtos != null) {
+            List<UserRes> members = new ArrayList<>();
+            ArchiveDto archiveDto = myArchivesDtos.get(0);
+            UUID archiveId = archiveDto.getArchiveId();
+            members.add(archiveDto.getMember());
 
-                archiveRes.setMembers(members);
-                archiveRes.setBookmark(isBookmark);
+            ArchiveDto curArchive = null;
+            for (int i = 1; i < myArchivesDtos.size(); i++) {
+                curArchive = myArchivesDtos.get(i);
+                if (archiveId.equals(curArchive.getArchiveId())) { // 같다면
+                    members.add(curArchive.getMember());
+                } else { // 다르다면
+                    myArchives.add(
+                            ArchiveRes.of(curArchive.getArchiveId(), curArchive.getOwner(), curArchive.getTitle(),
+                                    curArchive.getDescription(), false, members));
+                    members.clear();
+
+                    archiveId = curArchive.getArchiveId();
+                    members.add(curArchive.getMember());
+                }
+            }
+            if (members.size() > 0 && curArchive != null) {
+                myArchives.add(
+                        ArchiveRes.of(curArchive.getArchiveId(), curArchive.getOwner(), curArchive.getTitle(),
+                                curArchive.getDescription(), false, members));
+                members.clear();
             }
         }
 
@@ -92,8 +126,8 @@ public class ArchiveService {
         return friendArchives;
     }
 
-    public List<ArchiveRes> getMyBookmarkArchive(UUID userId) {
-        List<ArchiveRes> bookmarkArchives = archiveRepository.getBookmarkArchive(userId);
+    public List<ArchiveRes> getMyBookmarkArchives(UUID userId) {
+        List<ArchiveRes> bookmarkArchives = archiveRepository.getBookmarkArchives(userId);
 
         if (bookmarkArchives != null) {
             for (ArchiveRes archiveRes : bookmarkArchives) {
@@ -164,7 +198,7 @@ public class ArchiveService {
         return getArchiveDetail(lastArchive.getArchive().getId());
     }
 
-    public void createLastArchive(UUID archiveId, User user){
+    public void createLastArchive(UUID archiveId, User user) {
 
         Archive archive = archiveRepository.findById(archiveId).get();
 

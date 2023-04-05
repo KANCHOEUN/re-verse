@@ -39,11 +39,34 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
     /*
      * 나의 Archive 정보 리스트 가져오기
      * */
+//    @Override
+//    public List<ArchiveRes> getMyArchives(UUID userId) {
+//        return jpaQueryFactory
+//                .select(
+//                        new QArchiveRes(
+//                                QArchive.archive.id,
+//                                new QUserRes(
+//                                        QUser.user.id,
+//                                        QUser.user.nickname,
+//                                        QUser.user.message,
+//                                        QUser.user.avatar.stringValue()
+//                                ),
+//                                QArchive.archive.title,
+//                                QArchive.archive.description
+//                        )
+//                )
+//                .from(QArchive.archive)
+//                .leftJoin(QUser.user)
+//                .on(QArchive.archive.ownerId.eq(QUser.user.id))
+//                .where(QArchive.archive.ownerId.eq(userId))
+//                .fetch();
+//    }
+
     @Override
-    public List<ArchiveRes> getMyArchives(UUID userId) {
+    public List<ArchiveDto> getMyArchives(UUID userId) {
         return jpaQueryFactory
                 .select(
-                        new QArchiveRes(
+                        new QArchiveDto(
                                 QArchive.archive.id,
                                 new QUserRes(
                                         QUser.user.id,
@@ -52,12 +75,19 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
                                         QUser.user.avatar.stringValue()
                                 ),
                                 QArchive.archive.title,
-                                QArchive.archive.description
+                                QArchive.archive.description,
+                                new QUserRes(
+                                        QArchiveMember.archiveMember.user.id,
+                                        QArchiveMember.archiveMember.user.nickname,
+                                        QArchiveMember.archiveMember.user.message,
+                                        QArchiveMember.archiveMember.user.avatar.stringValue()
+                                )
                         )
                 )
-                .from(QArchive.archive)
-                .leftJoin(QUser.user)
-                .on(QArchive.archive.ownerId.eq(QUser.user.id))
+                .from(QArchiveMember.archiveMember)
+                .join(QArchiveMember.archiveMember.user, QUser.user)
+                .join(QArchiveMember.archiveMember.archive, QArchive.archive)
+                .join(QUser.user).on(QArchive.archive.ownerId.eq(QUser.user.id))
                 .where(QArchive.archive.ownerId.eq(userId))
                 .fetch();
     }
@@ -124,7 +154,7 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
     }
 
     @Override
-    public List<ArchiveRes> getBookmarkArchive(UUID userId) {
+    public List<ArchiveRes> getBookmarkArchives(UUID userId) {
         return jpaQueryFactory
                 .select(
                         new QArchiveRes(
